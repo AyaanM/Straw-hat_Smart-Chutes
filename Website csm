@@ -1,0 +1,11 @@
+CREATE TABLE sorting_events (
+    event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    target_container TEXT, -- GLASS, PAPER, or COMPLEX
+    weight_grams REAL
+);
+
+-- View for the City of Edmonton Roadmap 2030 dashboard
+CREATE VIEW purity_metrics AS
+SELECT target_container, COUNT(*) as volume, SUM(weight_grams) as mass
+FROM sorting_events GROUP BY target_container;
