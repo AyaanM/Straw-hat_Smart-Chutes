@@ -1,0 +1,13 @@
+#include <ESP32Servo.h>
+
+Servo fujitora;
+const int REST_HEIGHT = 105; // Adjust this value to get exactly 1 inch of lift
+
+void setup() {
+  fujitora.attach(18); // Use the pin connected to your blue actuator
+  fujitora.write(REST_HEIGHT); // Level the tray immediately
+}
+
+void loop() {
+  // Stay here and hold the weight until the bottle arrives
+}
