@@ -1,0 +1,40 @@
+#include <Arduino.h>
+#include "HX711.h"
+#include <ESP32Servo.h>
+
+// Pins
+const int DT = 4; const int SCK = 5;
+const int SERVO_PIN = 18;
+
+HX711 scale;
+Servo fujitora;
+
+void setup() {
+    Serial.begin(115200);
+    scale.begin(DT, SCK);
+    fujitora.attach(SERVO_PIN);
+    
+    // Rest Cycle: Level the tray at 1-inch lift
+    fujitora.write(90); 
+}
+
+void loop() {
+    if (scale.is_ready()) {
+        long weight = scale.get_units(5); // Average of 5 readings
+        
+        if (weight > 20) { // If item > 20g detected
+            Serial.println("ITEM_DETECTED");
+            
+            // Wait for command from Pi 5 (Robin)
+            if (Serial.available()) {
+                String cmd = Serial.readStringUntil('\n');
+                if (cmd == "TILT_GLASS") fujitora.write(45);
+                else if (cmd == "TILT_PAPER") fujitora.write(135);
+                else fujitora.write(90); // Complex Waste Drop
+                
+                delay(3000); // Hold for gravity sort
+                fujitora.write(90); // Return to Rest Cycle
+            }
+        }
+    }
+}
