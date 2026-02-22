@@ -1,0 +1,8 @@
+The Integrated Cyber-Physical Loop
+Vision & Inference: An iPhone 16 Pro on a tripod captures 4K frames; the Raspberry Pi 5 sends them to the Cerebras API for sub-150ms classification.
+Precision Sensing: Load Cells connected to an HX711 amplifier detect the mass of the item to confirm the AI's "visual guess" and check for liquid contaminants.
+Physical Actuation: The ESP32 (Lindbergh) commands the Fujitora servos to tilt the tray based on the determined material:
+Left ($45^\circ$): Glass.
+Right ($135^\circ$): Paper.
+Center ($90^\circ$): Complex Waste/Aluminum/Plastic.
+Software Stack: Developed in VS Code (PlatformIO) for the ESP32 and Python for the Pi 5, with data persisting in an SQL database for the Framer UI.
