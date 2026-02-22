@@ -1,0 +1,36 @@
+The "Lindbergh" Logic Reset (ESP32)
+If the actuators (Fujitora) aren't responding to the scale (Sogeking), check these three things immediately:
+
+Serial Monitor Check: Open the Serial Monitor in VS Code/Arduino IDE at 115200 baud. If you see "HX711 NOT FOUND," your VCC or GND jumper on the back of the spine has likely slipped.
+
+The "Brownout" Fix: If the ESP32 restarts every time the servos move, your FNIRSI DPS-150 is likely set too low. Ensure it is at 6.0V to provide enough "juice" for the tilt.
+
+Manual Leveling: If the actuators don't hit that 1-inch rest mark, send a manual fujitora.write(105); command via the serial terminal to force the tray into position for the judges.
+
+2. The "Robin" Vision Override (Pi 5 & iPhone)
+If the Cerebras AI isn't returning a result because of the hackathon's crowded Wi-Fi:
+
+Wired Tether: Ensure your iPhone 16 Pro is connected to the Pi 5 via USB-C to USB-C. This bypasses the local Wi-Fi congestion and keeps your latency under 500ms.
+
+The "Static" Demo: If the API is down, have three pre-saved images on your iPad Pro dashboard (one Alu, one Plastic, one Spandam). You can "simulate" the sort by clicking the image to show the judges the SQL logic and Framer UI.
+
+3. The "Sogeking" Calibration Emergency
+If the scale is reading 0.000g even when you drop a bottle:
+
+Tare Reset: Use a physical "Reset" button (or a line in your code) to re-tare the scale while the machine is sitting still. Vibrations from people walking by the table can sometimes "drift" the zero point.
+
+Jumper Continuity: Check the breadboard rails. Sometimes the metal pins on the jumpers don't make full contact with the breadboard "springs". A quick "press and wiggle" usually fixes this.
+
+4. Final ReadMe: "Developer's Manifesto"
+Add this to your submission so the Garmin and Lantern Studios recruiters see your professional mindset:
+
+Project Integrity Note:
+This system is built for Deterministic Recovery. By combining high-precision weight data (0.0005g) with high-speed vision (Cerebras AI), we eliminate the "Vision-Only" error margin.
+
+Manual Override Commands:
+
+CMD_LEVEL: Returns Fujitora to the 1-inch rest cycle.
+
+CMD_TARE: Resets Sogeking's baseline.
+
+CMD_PURGE: Force-tilts the tray to the "Spandam" (Contamination) bin.
