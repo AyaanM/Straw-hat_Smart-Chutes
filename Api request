@@ -1,0 +1,26 @@
+import os
+from cerebras.cloud.sdk import Cerebras
+
+# Initialize the "Revolutionary Army" Brain
+client = Cerebras(api_key=os.environ.get("CEREBRAS_API_KEY"))
+
+def classify_waste(image_path):
+    # We use a Vision-capable model to identify the material
+    response = client.chat.completions.create(
+        model="llama3.2-11b-vision-preview", 
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "Classify this item as: ALU, PLASTIC, or CONTAMINATED. Return only the code."},
+                    {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_path}"}}
+                ],
+            }
+        ],
+        max_tokens=10
+    )
+    return response.choices[0].message.content
+
+# Example usage triggered by Sogeking (Scale)
+# result = classify_waste("captured_bottle.jpg")
+# print(f"Cerebras Classification: {result}")
