@@ -1,0 +1,42 @@
+import os
+import serial
+import sqlite3
+from cerebras.cloud.sdk import Cerebras
+
+# Initialize Revolutionary Army Systems
+client = Cerebras(api_key="YOUR_CEREBRAS_API_KEY")
+ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1) # USB connection to ESP32
+db = sqlite3.connect('smart_chutes.db')
+
+def classify_and_sort():
+    # 1. Capture from iPhone 16 Pro (WebRTC or local bridge)
+    image_path = "capture.jpg" 
+    
+    # 2. Cerebras Inference Loop
+    response = client.chat.completions.create(
+        model="llama3.2-11b-vision-preview",
+        messages=[{
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "Classify waste: GLASS, PAPER, or COMPLEX. Return one word."},
+                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_path}"}}
+            ]
+        }]
+    )
+    material = response.choices[0].message.content.strip().upper()
+
+    # 3. Deterministic Command to Fujitora (ESP32)
+    if "GLASS" in material:
+        ser.write(b'TILT_GLASS\n')
+    elif "PAPER" in material:
+        ser.write(b'TILT_PAPER\n')
+    else:
+        ser.write(b'TILT_COMPLEX\n')
+
+    # 4. SQL Purity Log
+    db.execute("INSERT INTO sorting_events (target_container) VALUES (?)", (material,))
+    db.commit()
+
+while True:
+    if ser.readline().decode().strip() == "ITEM_DETECTED":
+        classify_and_sort()
