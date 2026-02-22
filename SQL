@@ -1,0 +1,21 @@
+SQL Schema :-- Track every single (Sorting Event) by the 
+CREATE TABLE sorting_events (
+    event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    target_container TEXT,        -- GLASS_BIN, PAPER_BIN, COMPLEX_WASTE_BIN
+    detected_material TEXT,      -- The specific item (e.g., 'Soda Can', 'Wine Bottle')
+    weight_grams REAL,            -- Data from Scale (Load Cells)
+    ai_confidence REAL,           -- Accuracy from Pi (Cerebras)
+    bin_fullness_check BOOLEAN    -- Data from the IR "Sentinel" sensors
+);
+
+
+-- Real-time Dashboard View for your Framer site
+CREATE VIEW container_status AS
+SELECT 
+    target_container,
+    SUM(weight_grams) as current_mass_g,
+    COUNT(*) as total_items,
+    ROUND(AVG(ai_confidence) * 100, 2) as sorting_purity_pct
+FROM sorting_events
+GROUP BY target_container;
